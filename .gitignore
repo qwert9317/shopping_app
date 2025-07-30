@@ -3,6 +3,7 @@ client/node_modules/
 shopping_app_server/node_modules/
 
 # Environment variables
+.env
 shopping_app_server/src/.env
 client/.env
 
