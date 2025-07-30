@@ -89,15 +89,20 @@ function HomePage() {
   console.log(products);
 
   const handleCreate = (newProduct: Omit<ProductType, 'id'>) => {
-    fakeId.current += 1;
-    setProducts([...products, {
-      ...newProduct,
-      id: fakeId.current,
-    }]);
+    fetch(`/product`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newProduct),
+    }).then((response) => response.json())
+      .then((data) => {
+        setProducts((prev) => [...prev, data.product]);
+      });
   };
 
   const handleDelete = (id: string) => {
-    fetch('/product/${id}', {
+    fetch(`/product/${id}`, {
       method: "DELETE",
     }).then((response) => {
       if (response.ok){
@@ -106,15 +111,20 @@ function HomePage() {
     });
   };
 
-  const handleUpdate = (updateProduct: {
-    id: number;
-    name: string;
-    explanation: string;
-    price: number;
-  }) => {
-    setProducts(
-      products.map((product) => (product.id === updateProduct.id ? updateProduct : product))
-    );
+  const handleUpdate = (updateProduct: ProductType) => {
+    fetch(`/product/${updateProduct.id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updateProduct),
+    }).then((response) => {
+      if (response.ok){
+        setProducts(products.map((product) => (
+          product.id === updateProduct.id ? updateProduct : product
+        )));
+      }
+    });
   };
 
 
